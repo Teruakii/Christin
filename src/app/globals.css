@@ -1,26 +1,33 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-grape: #5b3fd9;
+  --color-grape-soft: #eeeaff;
+  --color-sun: #ffc93c;
+  --color-mint: #2cc9a0;
+  --color-mint-soft: #ddf7ef;
+  --color-coral: #ff6b6b;
+  --color-coral-soft: #ffe6e6;
+  --color-cloud: #f6f5fb;
+  --color-night: #1f1a3a;
+  --font-sans: var(--font-kanit), sans-serif;
+  --font-mono: var(--font-fira), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* เงาทึบใต้การ์ดและปุ่ม เป็นเอกลักษณ์ของแนว C */
+@utility lift { box-shadow: 0 5px 0 #e4e0f5; }
+@utility lift-grape { box-shadow: 0 5px 0 #3a28a0; }
+@utility lift-sun { box-shadow: 0 5px 0 #d9a514; }
+@utility lift-mint { box-shadow: 0 5px 0 #1e9c7b; }
+@utility lift-coral { box-shadow: 0 5px 0 #c94b4b; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cloud);
+  color: var(--color-night);
 }
+
+/* ปิด ligature ของ Fira Code ไม่งั้น == กับ -> กลายเป็นสัญลักษณ์เดียว มือใหม่อ่านโค้ดผิด */
+pre, code, .font-mono { font-variant-ligatures: none; }
+
+button:not(:disabled), a { cursor: pointer; }
+button:disabled { opacity: .5; }

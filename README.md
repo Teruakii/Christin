@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# แบบทดสอบโค้ดก่อนเรียน + จับกลุ่มคละทักษะ
 
-## Getting Started
+ต้นแบบสำหรับโครงการพัฒนานักศึกษาไอทีที่ใช้ AI เขียนโค้ดแต่ยังอธิบายโค้ดไม่ได้ ผู้เข้าร่วมทำแบบทดสอบอ่านโค้ดก่อนเรียน ระบบใช้คะแนนจัดกลุ่มให้คนพื้นฐานดีอยู่กลุ่มเดียวกับคนพื้นฐานอ่อน แล้ววัดผลซ้ำหลังจบกิจกรรมและหลังผ่านไป 14 วัน
 
-First, run the development server:
+- ผู้เข้าร่วมไม่ต้องสมัครหรือล็อกอิน ใช้รหัสห้องเข้า แล้วได้รหัสติดตาม 6 ตัวไว้กลับมาทำรอบถัดไป
+- ทีมงานเข้าด้วยรหัสทีมงานรหัสเดียว ใช้ได้กับทุกห้องของทีม
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## สิ่งที่ต้องมี
+
+- Node.js 24 ขึ้นไป (ใช้ฐานข้อมูล SQLite ที่มากับ Node ผ่าน `node:sqlite` ไม่ต้องติดตั้งฐานข้อมูลเพิ่ม)
+- npm
+
+## ติดตั้งและรัน
+
+1. ติดตั้งแพ็กเกจ
+
+   ```
+   npm install
+   ```
+
+2. สร้างไฟล์ `.env` จาก `.env.example` แล้วใส่ `SESSION_SECRET` ที่สุ่มใหม่ (อย่างน้อย 32 ตัวอักษร)
+
+   ```
+   cp .env.example .env
+   node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+   ```
+
+   นำค่าที่ได้ไปใส่หลัง `SESSION_SECRET=` ในไฟล์ `.env`
+
+3. รันเซิร์ฟเวอร์
+
+   ```
+   npm run dev -- -p 3100
+   ```
+
+   เปิด http://localhost:3100 ฐานข้อมูลจะถูกสร้างที่ `data/app.db` อัตโนมัติ
+
+## เริ่มใช้งานครั้งแรก (ทีมงาน)
+
+1. เปิด http://localhost:3100/staff/create แล้วกด **สร้างทีม** ระบบแสดงรหัสทีมงานครั้งเดียว ให้จดไว้และแจกเฉพาะทีมงาน
+2. ระบบพาไปหน้า **ตั้งค่าห้อง** กด **สร้างห้องใหม่** แล้วกรอกชื่อห้อง ภาษาที่สอน จำนวนคน คนต่อกลุ่ม สัดส่วนภาษาในข้อสอบ และกำหนดการ 3 รอบ
+   - รอบติดตามผลต้องห่างจากวันจบกิจกรรมอย่างน้อย 14 วัน ระบบไม่ให้บันทึกถ้าไม่ครบ
+3. ได้ **รหัสห้อง** 6 ตัว แจกให้ผู้เข้าร่วม
+
+ครั้งต่อไปเข้าที่ http://localhost:3100/staff/login ใส่รหัสทีมงานช่องเดียว
+
+## การใช้งานของผู้เข้าร่วม
+
+1. หน้าแรก ใส่รหัสห้อง แล้วกรอกชื่อเล่น ได้รหัสติดตาม 6 ตัว (จดไว้ เครื่องเดิมจำให้อัตโนมัติ)
+2. ทำแบบทดสอบก่อนเรียน 10 ข้อ เป็นโค้ดหลายภาษาคละกัน อ่านแล้วเลือกผลลัพธ์ ข้อไหนไม่รู้กดข้ามได้
+3. ส่งแล้วเห็นคะแนนและขั้นต่อไปทันที หน้า **ความคืบหน้า** บอกกลุ่ม คะแนนแต่ละรอบ และวันที่รอบถัดไปเปิด
+4. กลับมาทำรอบหลังกิจกรรมและรอบติดตามผล 14 วัน ด้วยรหัสติดตามเดิม (ใช้เครื่องอื่นก็ได้)
+5. หลังทำรอบติดตามผล เปิดดู **เฉลยรายข้อ** พร้อมคำอธิบายได้
+6. ปุ่มช่วยเหลือมุมขวาล่าง ส่งคำขอเข้าคิว เห็นลำดับคิว และรู้ทันทีเมื่อทีมงานรับเรื่อง
+
+## การใช้งานของทีมงาน
+
+| เมนู | ใช้ทำอะไร |
+|---|---|
+| ภาพรวม | กำหนดการ จำนวนคนที่ส่งแต่ละรอบ จำนวนคนแต่ละระดับ และรายชื่อคนที่ยังไม่ส่ง |
+| จัดกลุ่ม | ตั้งคนต่อกลุ่ม กดจัดกลุ่มคละคะแนน ประกาศให้ผู้เข้าร่วมเห็น ย้ายคน ลบกลุ่ม หรือล้างกลุ่มทั้งหมด |
+| คิวช่วยเหลือ | รับเรื่อง ทำเสร็จ หรือคืนเข้าคิว อัปเดตทุก 4 วินาที |
+| ผลการเปลี่ยนแปลง | คะแนนเฉลี่ย 3 รอบ สัดส่วนคะแนนที่คงอยู่หลัง 14 วัน แยกตามภาษา และดาวน์โหลด CSV |
+| เฉลย | คำตอบที่ถูก และจำนวนคนที่เลือกแต่ละตัวเลือก ใช้ดูว่าคนเข้าใจผิดไปทางไหน |
+| ตั้งค่าห้อง | รายการห้องของทีม สลับห้อง สร้างหรือลบห้อง แก้ตั้งค่าห้อง และออกรหัสทีมงานใหม่ |
+
+การจัดกลุ่มเรียงคะแนนก่อนเรียนแล้วแจกแบบงู (1→N, N→1) ทุกกลุ่มจึงได้คนจากทุกช่วงคะแนน คนที่ส่งหลังจัดกลุ่มจะได้กลุ่มที่ยังไม่เต็มโดยอัตโนมัติ ผู้เข้าร่วมเห็นแค่ชื่อเพื่อนในกลุ่ม ไม่เห็นคะแนน
+
+## ทดสอบ
+
+```
+npm run smoke        # build แล้วยิง API จริงทุกขั้นบนฐานข้อมูลแยก (ลบทิ้งเมื่อจบ)
+npm run verify-bank  # รันโค้ดข้อ Python/JavaScript จริงเทียบกับเฉลยในคลังคำถาม
+npm run type-check
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`npm run smoke` ครอบคลุมทั้งการใช้งานปกติและกรณีผิดพลาด เช่น ส่งซ้ำ ส่งคำตอบไม่ตรงชุด ทำก่อนวันเปิด กำหนดการติดตามผลไม่ครบ 14 วัน รหัสทีมงานผิด และทีมอื่นลบห้องข้ามทีมไม่ได้
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ลืมรหัสทีมงาน
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- ถ้ายังเข้าระบบค้างไว้ กด **ออกรหัสทีมงานใหม่** ในหน้าตั้งค่าห้อง
+- ถ้าออกจากระบบแล้ว รันคำสั่งนี้ในโฟลเดอร์โปรเจกต์
 
-## Learn More
+  ```
+  node tools/reset-staff-code.mjs <รหัสห้องใดก็ได้ของทีม>
+  ```
 
-To learn more about Next.js, take a look at the following resources:
+รหัสเดิมจะใช้ไม่ได้ทันทีในทั้งสองกรณี
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## โครงสร้างโค้ด
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/app/            หน้าเว็บ (ผู้เข้าร่วม และ staff/ สำหรับทีมงาน)
+src/app/api/        API ตอบ { data } หรือ { code, message } โดย message เป็นรหัส UPPER_SNAKE
+src/server/         business logic แยกตามเรื่อง: room, team, quiz, group, help, report
+src/server/question/bank.ts  คลังคำถาม 40 ข้อ (ภาษาละ 10)
+src/lib/api/        ฟังก์ชันเรียก API ฝั่งหน้าเว็บ
+src/types/          type ที่ใช้ร่วมกันระหว่างหน้าเว็บกับ API
+tools/              smoke test, ตรวจคลังคำถาม, ออกรหัสทีมงานใหม่
+```
 
-## Deploy on Vercel
+## ข้อจำกัด
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ข้อสอบวัดการอ่านโค้ดแล้วบอกผลลัพธ์ ยังไม่ได้วัดการอธิบายโค้ดด้วยคำพูด
+- ข้อ Java และ C ในคลังคำถามตรวจเฉลยด้วยการอ่าน ยังไม่ได้รันด้วย compiler
+- ไม่มีการแจ้งเตือน ผู้เข้าร่วมต้องกลับมาเองเมื่อถึงรอบ
+- ใครมีรหัสติดตามก็ดูผลของรหัสนั้นได้ เป็นสิ่งที่แลกกับการไม่มีล็อกอิน
+- ฐานข้อมูลเป็นไฟล์ในเครื่อง ถ้า deploy ต้องใช้เครื่องที่มีดิสก์ถาวร (ใช้กับ Vercel ไม่ได้)
+- ยังไม่ได้ทดสอบกับผู้ใช้จริง
